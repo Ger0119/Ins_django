@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+
+{% block content %}
+
+<div class="my-4">
+    <h2>ACCOUNT Search</h2>
+</div>
+
+<div class="table-responsive search-table">
+    <table class="table">
+        <form method="POST">
+            {% csrf_token %}
+            <tbody>
+                <tr>
+                    <th scope="row">
+                        <label for="" class="control-label">Keyword</label>
+                    </th>
+                    <td>
+                        {% render_field form.keyword class='form-control' placeholder='Keyword+Keyword' %}
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        <label for="" class="control-label">Post Count</label>
+                    </th>
+                    <td>
+                        {% render_field form.post_count class='form-control' placeholder='1000' %}
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        <label for="" class="control-label">Followers Count</label>
+                    </th>
+                    <td>
+                        {% render_field form.followers_count class='form-control' placeholder='1000' %}
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        <label for="" class="control-label">Created At</label>
+                    </th>
+                    <td>
+                        {% render_field form.created_at class='form-control' placeholder='Created At' %}
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        <label for="" class="control-label">○○ Years Before</label>
+                    </th>
+                    <td>
+                        {% render_field form.year class='form-control' placeholder='1' %}
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td class="text-center" colspan="2">
+                        <button class="btn btn-warning" type="submit">Search Now</button>
+                    </td>
+                </tr>
+            </tbody>
+        </form>
+    </table>
+</div>
+
+<p>※キーワードによっては検索に時間がかかります</p>
+
+{% endblock %}

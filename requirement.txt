@@ -1,0 +1,5 @@
+Django
+django-widget-tweaks
+requests
+django-environ
+pandas

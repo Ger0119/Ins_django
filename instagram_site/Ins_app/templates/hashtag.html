@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h4 class="mb-3">Search HashTag 「{{ hashtag }}」</h4>
+
+<h4 class="mb-3">Result</h4>
+
+<div class="row">
+    {% for index,row in hashtag_media_data.iterrows %}
+        <div class="col-sm-3 mb-2">
+            <div class="card h-100">
+                <div class="card_body">
+                    <div class="mb-3">
+                        <a href="{{ row.permalink }}" target="_blank">
+                            
+                            {% if row.media_type == 'VIDEO' %}
+                                <i class="fa fa-user">
+                                    <span>Video Page</span>
+                                </i>
+                                <div class="ratio ratio-16x9 mb-3">
+                                    <iframe src="{{ row.media_url }}" class="" allowfullscreen></iframe>
+                                </div>
+                            {% else %}
+                                <div class="media_image">
+                                    <img src="{{ row.media_url }}" alt="" class="img card-img-top">
+                                </div>
+                            {% endif %}
+                        </a>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <div class="">
+                            <i class="fas fa-heart text-secondary mr-2"></i>
+                            <span class="mr-3">{{ row.like_count }}</span>
+                            <i class="fas fa-comment text-secondary mr-2"></i>
+                            <span class="mr-3">{{ row.comments_count }}</span>
+                        </div>
+                        <div class="">{{ row.timestamp }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    {% endfor %}
+</div>
+
+{% endblock %}

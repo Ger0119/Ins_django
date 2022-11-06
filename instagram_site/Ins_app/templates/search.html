@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+
+{% block content %}
+
+<div class="my-4">
+    <h2>HashTag Search</h2>
+</div>
+
+<div class="table-responsive search-table">
+    <table class="table">
+        <form method="POST">
+            {% csrf_token %}
+            <tbody>
+                <tr>
+                    <th scope="row">
+                        <label for="" class="control-label">HashTag</label>
+                    </th>
+                    <td>
+                        {% render_field form.hashtag class='form-control' placeholder='HashTag' %}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-center" colspan="2">
+                        <button class="btn btn-warning" type="submit">Search Now</button>
+                    </td>
+                </tr>
+            </tbody>
+        </form>
+    </table>
+</div>
+
+<p>※ハッシュタグによっては検索に時間がかかります</p>
+
+{% endblock %}
