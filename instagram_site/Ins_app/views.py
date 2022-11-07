@@ -12,7 +12,7 @@ import json
 import math
 import pandas as pd
 from .models import Insight, Post, HashTag
-from .forms import HashtagForm, AccountForm
+from .forms import HashtagForm, AccountForm,IDForm
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
@@ -22,14 +22,14 @@ import time
 from dateutil import relativedelta
 # Create your views here.
 
-def get_credentials():
+def get_credentials(ID='k_ger1'):
     credentials = {}
     credentials['access_token'] = settings.ACCESS_TOKEN
     credentials['instagram_id'] = settings.INSTAGRAM_ID
     credentials['graph_domain'] = 'https://graph.facebook.com/'
     credentials['graph_version'] = 'v15.0'
     credentials['endpoint_base'] = credentials['graph_domain'] + credentials['graph_version'] + '/'
-    credentials['ig_username'] = 'k_ger1'#'hathle'#'k_ger1'
+    credentials['ig_username'] = ID#'hathle'#'k_ger1'
 
     return credentials
 
@@ -63,10 +63,23 @@ def get_media_insights(params):
 
 class IndexView(View):
     def get(self,request,*args,**kwargs):
-        params = get_credentials()
+        form = IDForm(request.POST or None)
+        Post.objects.all().delete()
+        return render(request,'account_id.html',{
+            'form' : form
+        })
+    def post(self,request,*args,**kwargs):
+        form = IDForm(request.POST or None)
+        if not form.is_valid():
+            return redirect('index')
+        ID = form.cleaned_data['ID']
+        params = get_credentials(ID)
 
         account_response = get_account_info(params)
         # print(account_response)
+        if 'error' in account_response['json_data']:
+            return render(request,'index.html',{'error': 'Error : Invalid ID'})
+
         business_discovery = account_response['json_data']['business_discovery']
         # print(business_discovery)
         account_data = {
@@ -154,8 +167,16 @@ class IndexView(View):
         latest_media_data = business_discovery['media']['data'][0]
         params['media_id'] = latest_media_data['id']
         media_response = get_media_insights(params)
-
-        media_data = media_response['json_data']['data']
+        engagement= 0
+        impression= 0
+        reach= 0
+        save = 0
+        if 'data' in media_response['json_data']:
+            media_data = media_response['json_data']['data']
+            engagement= media_data[0]['values'][0]['value']
+            impression= media_data[1]['values'][0]['value']
+            reach= media_data[2]['values'][0]['value']
+            save=media_data[3]['values'][0]['value']
         if latest_media_data['media_type'] == 'CAROUSEL_ALBUM':
             media_url = latest_media_data['children']['data'][0]['media_url']
             if latest_media_data['children']['data'][0]['media_url'] == 'VIDEO':
@@ -174,10 +195,10 @@ class IndexView(View):
             'timestamp': localtime(datetime.strptime(latest_media_data['timestamp'], '%Y-%m-%dT%H:%M:%S%z')).strftime('%Y/%m/%d %H:%M'),
             'like_count': latest_media_data['like_count'],
             'comments_count': latest_media_data['comments_count'],
-            'engagement': media_data[0]['values'][0]['value'],
-            'impression': media_data[1]['values'][0]['value'],
-            'reach': media_data[2]['values'][0]['value'],
-            'save': media_data[3]['values'][0]['value'],
+            'engagement': engagement,
+            'impression':impression,
+            'reach': reach,
+            'save': save,
         }
 
         return render(request,'index.html',{
@@ -387,7 +408,7 @@ def get_user_id(driver):
     return user_ids
 
 def get_pagenate_account_info(params):
-    print(params)
+    # print(params)
     endpoint_params = {}
     if type(params['after_key']) == list:
         if len(params['after_key']) > 0:

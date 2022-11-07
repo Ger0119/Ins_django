@@ -1,10 +1,13 @@
 {% extends "base.html" %}
 
 {% block content %}
+{% if error %}
+    <span style="color:red;" class="my-3">{{error}}</span>
+{% else %}
 
 <h3 class="my-3">ダッシュボード</h3>
 <div class="d-flex align-items-center justify-content-center flex-column">
-    <div class="profile_picture">
+    <div class="profile_picture" style="width: 200px;">
         <img src="{{ account_data.profile_picture_url }}" alt="" class="card-img-top rounded-circle">
     </div>
     <h4 class="my3">{{ account_data.username }}</h4>
@@ -112,7 +115,7 @@
         </div>
     </div>
 </div>
-
+{% endif %}
 {% endblock %}
 {% block extra_js %}
 <script>
@@ -189,5 +192,6 @@
         });
 
 </script>
+
 
 {% endblock %}

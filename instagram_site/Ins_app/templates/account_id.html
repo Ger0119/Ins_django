@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+
+{% block content %}
+
+<div class="my-4">
+    <h2>ACCOUNT Info Search</h2>
+</div>
+
+<div class="table-responsive search-table">
+    <table class="table">
+        <form method="POST">
+            {% csrf_token %}
+            <tbody>
+                <tr>
+                    <th scope="row">
+                        <label for="" class="control-label">ACCOUNT ID</label>
+                    </th>
+                    <td>
+                        {% render_field form.ID class='form-control' placeholder='k_ger1' %}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-center" colspan="2">
+                        <button class="btn btn-warning" type="submit">Search Now</button>
+                    </td>
+                </tr>
+            </tbody>
+        </form>
+    </table>
+</div>
+
+{% endblock %}
